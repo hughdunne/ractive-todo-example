@@ -15,23 +15,47 @@
 
 <body>
 <h1>Ractive test</h1>
-<div id='container'>
-  <h2>Hello, World!</h2>
-  <p>You have 3 tasks
-  including 2 incomplete ones.</p>
+<div id='container'></div>
+<script id='template' type='text/x-handlebars-template'>
+  <h2>Hello, {{name}}!</h2>
+  <p>You have {{count_total}} tasks
+  including {{count_incomplete}} incomplete ones.</p>
   <ul>
-    <li id="task-0">
-      <input type="checkbox" checked />
-      <span class="complete">Go to Javascript meetup</span>
+  {{#tasks}}
+    <li id="task-{{@index}}">
+      <input type="checkbox" {{#if complete}}checked{{/if}} />
+      <span class={{#if complete}}"complete"{{else}}"incomplete"{{/if}}>{{description}}</span>
     </li>
-    <li id="task-1">
-      <input type="checkbox" /><span class="incomplete">Eat pizza</span>
-    </li>
-    <li id="task-2">
-      <input type="checkbox" /><span class="incomplete">Learn Ractive</span>
-    </li>
+  {{/tasks}}
   </ul>
-  New task: <input id="newtask" placeholder="Description" />
-</div>
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.min.js"></script>
+<script>
+  var data = {
+    name: 'World',
+    tasks: [
+        {
+            description: "Go to Javascript meetup",
+            complete: true
+        },
+        {
+            description: "Eat pizza",
+            complete: false
+        },
+        {
+            description: "Learn Ractive",
+            complete: false
+        }
+    ]
+  };
+  Handlebars.registerHelper('count_total', function() {
+    return (data.tasks.length);
+  });
+  Handlebars.registerHelper('count_incomplete', function() {
+    return (data.tasks.filter(function(task){return !task.complete}).length);
+  });
+  var template = Handlebars.compile(document.getElementById('template').innerHTML);
+  document.getElementById('container').innerHTML = template(data);
+</script>
 </body>
 </html>
