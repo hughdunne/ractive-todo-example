@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang='en-US'>
+<head>
+<meta charset='utf-8'>
+<style>
+.complete {
+  text-decoration: line-through;
+}
+.incomplete {
+  text-decoration: initial;
+}
+</style>
+<title>Ractive test</title>
+</head>
+
+<body>
+<h1>Ractive test</h1>
+<div id='container'>
+  <h2>Hello, World!</h2>
+  <p>You have 3 tasks
+  including 2 incomplete ones.</p>
+  <ul>
+    <li id="task-0">
+      <input type="checkbox" checked />
+      <span class="complete">Go to Javascript meetup</span>
+    </li>
+    <li id="task-1">
+      <input type="checkbox" /><span class="incomplete">Eat pizza</span>
+    </li>
+    <li id="task-2">
+      <input type="checkbox" /><span class="incomplete">Learn Ractive</span>
+    </li>
+  </ul>
+  New task: <input id="newtask" placeholder="Description" />
+</div>
+</body>
+</html>
