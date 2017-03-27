@@ -1,16 +1,16 @@
 <!doctype html>
 <html lang='en-US'>
 <head>
-<meta charset='utf-8'>
-<style>
-.complete {
-  text-decoration: line-through;
-}
-.incomplete {
-  text-decoration: initial;
-}
-</style>
-<title>Ractive test</title>
+  <meta charset='utf-8'>
+  <style>
+  .complete {
+    text-decoration: line-through;
+  }
+  .incomplete {
+    text-decoration: initial;
+  }
+  </style>
+  <title>Ractive test</title>
 </head>
 
 <body>
@@ -18,18 +18,20 @@
 <div id='container'></div>
 <script id='template' type='text/x-handlebars-template'>
   <h2>Hello, {{name}}!</h2>
-  <p>You have {{count_total}} tasks
-  including {{count_incomplete}} incomplete ones.</p>
+  <p>You have {{tasks.length}} tasks
+  including {{tasks.filter(isIncomplete).length}} incomplete ones.</p>
+  Change name to: <input type="text" value={{name}} />
   <ul>
   {{#tasks}}
     <li id="task-{{@index}}">
-      <input type="checkbox" {{#if complete}}checked{{/if}} />
-      <span class={{#if complete}}"complete"{{else}}"incomplete"{{/if}}>{{description}}</span>
+      <input type="checkbox" checked={{complete}} />
+      <span class={{complete ? "complete" : "incomplete"}}>{{description}}</span>
     </li>
   {{/tasks}}
   </ul>
+  New task: <input id="newtask" placeholder="Description" />
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ractive/0.9.0-build-116/ractive.min.js"></script>
 <script>
   var data = {
     name: 'World',
@@ -46,16 +48,27 @@
             description: "Learn Ractive",
             complete: false
         }
-    ]
+    ],
+    isIncomplete: function(task) {
+      return !task.complete;
+    }
   };
-  Handlebars.registerHelper('count_total', function() {
-    return (data.tasks.length);
+  var ractive = new Ractive({
+    el: '#container',
+    template: '#template',
+    data: data
   });
-  Handlebars.registerHelper('count_incomplete', function() {
-    return (data.tasks.filter(function(task){return !task.complete}).length);
+  document.getElementById('newtask').addEventListener('keypress', function (e) {
+    if (e.keyCode === 13) {
+      var tasks = ractive.get('tasks');
+      data.tasks.push({
+        description: this.value,
+        complete: false
+      });
+      ractive.set('tasks', tasks);
+      this.value = '';
+    }
   });
-  var template = Handlebars.compile(document.getElementById('template').innerHTML);
-  document.getElementById('container').innerHTML = template(data);
 </script>
 </body>
 </html>
