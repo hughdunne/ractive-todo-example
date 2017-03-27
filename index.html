@@ -19,7 +19,7 @@
 <script id='template' type='text/x-handlebars-template'>
   <h2>Hello, {{name}}!</h2>
   <p>You have {{tasks.length}} tasks
-  including {{tasks.filter(isIncomplete).length}} incomplete ones.</p>
+  including {{count_incomplete}} incomplete one{{count_incomplete === 1 ? '' : 's'}}.</p>
   Change name to: <input type="text" value={{name}} />
   <ul>
   {{#tasks}}
@@ -48,15 +48,20 @@
             description: "Learn Ractive",
             complete: false
         }
-    ],
-    isIncomplete: function(task) {
-      return !task.complete;
-    }
+    ]
   };
+  function isIncomplete(task) {
+    return !task.complete;
+  }
   var ractive = new Ractive({
     el: '#container',
     template: '#template',
-    data: data
+    data: data,
+    computed: {
+      count_incomplete: function() {
+        return this.get('tasks').filter(isIncomplete).length;
+      }
+    }
   });
   document.getElementById('newtask').addEventListener('keypress', function (e) {
     if (e.keyCode === 13) {
